@@ -1,6 +1,6 @@
 # 🎫 Event Ticketing System - UAS Pengembangan Aplikasi Web
 
-**Kelompok [NAMA KELOMPOK/NOMOR] - Studi Kasus 8**
+**Kelompok 4 - Studi Kasus 8**
 
 Repository ini berisi source code untuk **Event Ticketing System**, sebuah platform manajemen acara dan pemesanan tiket online. Proyek ini dikembangkan sebagai Ujian Akhir Semester (UAS) mata kuliah Pengembangan Aplikasi Web (IF25-22014) di Institut Teknologi Sumatera.
 
@@ -10,11 +10,11 @@ Repository ini berisi source code untuk **Event Ticketing System**, sebuah platf
 
 | NIM | Nama Lengkap | Role | Tanggung Jawab Utama |
 |-----|--------------|------|----------------------|
-| 121140xxx | [Nama Ketua] | **Team Leader** | Project Manager, Integration, Deployment |
-| 121140xxx | [Nama Anggota 1] | **Backend Dev** | API Endpoints, Auth, Logic |
-| 121140xxx | [Nama Anggota 2] | **Frontend Dev** | UI/UX, React Components, Integration |
-| 121140xxx | [Nama Anggota 3] | **Database Sp.** | Database Design, Migrations, Models |
-| 121140xxx | [Nama Anggota 4] | **Frontend Dev** | Form Handling, Styling, Responsiveness |
+| 123140040 | Gian Ivander | **Team Leader** | Project Manager, Integration, Deployment |
+| 123140155 | Ahmad Ali Mukti | **Backend Dev** | API Endpoints, Auth, Logic |
+| 123140137 | Anisah Octa Rohila | **Frontend Dev** | UI/UX, React Components, Integration |
+| 123140018 | Garis Rayya Rabbani | **Database Sp.** | Database Design, Migrations, Models |
+| 123140136 | Choirunnisa Syawaldina | **Frontend Dev** | Form Handling, Styling, Responsiveness |
 
 ---
 
@@ -59,7 +59,7 @@ Aplikasi ini menggunakan 3 tabel utama yang saling berelasi:
 2.  **Events:** Menyimpan detail acara yang dibuat oleh Organizer.
 3.  **Bookings:** Menyimpan transaksi tiket antara Attendee dan Event.
 
-*(Simpan gambar ERD kamu di folder `docs/erd.png` dan uncomment baris di bawah ini)*
+![WhatsApp Image 2025-12-11 at 16 32 24](https://github.com/user-attachments/assets/2ebfb44a-32fe-4932-815e-8b9c29153b17)
 ---
 
 ## 🚀 Cara Instalasi & Menjalankan (Local Development)
