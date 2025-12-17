@@ -144,7 +144,7 @@ const EventList = () => {
                     className="event-card"
                     key={evt.id}
                     data-idx={gIndex}
-                    style={{ ['--delay']: `${gIndex * 60}ms` }}
+                    style={{ ['--delay']: `${gIndex * 60}ms`, ['--tx']: gIndex % 2 === 0 ? '-12px' : '12px' }}
                   >
                     <div className="event-thumb">
                       {(() => {
@@ -169,7 +169,6 @@ const EventList = () => {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{evt.tag}</div>
                         <div style={{ display: 'flex', gap: 8 }}>
-                          <button className="btn">Lihat</button>
                           <button className="btn btn-primary" onClick={() => alert(`Beli tiket ${evt.title} (placeholder)`)}>Beli Tiket</button>
                         </div>
                       </div>
