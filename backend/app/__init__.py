@@ -37,6 +37,9 @@ def main(global_config, **settings):
         config.add_route('bookings', '/api/bookings')          # POST (Beli Tiket)
         config.add_route('my_bookings', '/api/my-bookings')    # GET (Lihat Tiket Saya)
         
+        # Route untuk Admin melihat semua booking/attendee
+        config.add_route('all_bookings', '/api/admin/bookings')
+        
         config.scan('.views')
         
     return config.make_wsgi_app()
