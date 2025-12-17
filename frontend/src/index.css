@@ -76,6 +76,18 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-1px);
 }
 
+/* Danger / red button for critical actions (used on NotFound page) */
+.btn-danger {
+  background-color: #c0392b;
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+  background-color: #a93226;
+  transform: translateY(-1px);
+}
+
 input {
   width: 100%;
   padding: 12px 16px;
