@@ -15,8 +15,8 @@ import BookingForm from './pages/BookingForm';
 import BookingHistory from './pages/BookingHistory';
 import UserProfile from './pages/UserProfile';
 
-import DashboardAdmin from './pages/DashboardAdmin';
 import OrganizerDashboard from './pages/Dashboard';
+import DashboardAdmin from './pages/DashboardAdmin';
 
 import NotFound from './pages/NotFound';
 
