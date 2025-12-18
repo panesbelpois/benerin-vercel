@@ -1,48 +1,53 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// 1. Import Navbar
+// Components
 import Navbar from './components/Navbar';
 
-// Import Pages Lama
+// Pages
 import EventList from './pages/EventList';
+import EventDetail from './pages/EventDetail';
+
 import Login from './pages/Login';
 import Register from './pages/Register';
-import DashboardAdmin from './pages/DashboardAdmin';
-import NotFound from './pages/NotFound';
 
-// Import Pages Baru (Niscil)
-import EventDetail from './pages/EventDetail';
 import BookingForm from './pages/BookingForm';
 import BookingHistory from './pages/BookingHistory';
 import UserProfile from './pages/UserProfile';
 
+import DashboardAdmin from './pages/DashboardAdmin';
+import OrganizerDashboard from './pages/Dashboard';
+
+import NotFound from './pages/NotFound';
+
 function App() {
   return (
     <BrowserRouter>
-      {/* 2. PASANG NAVBAR DISINI (Di luar Routes) */}
-      {/* Ini akan membuat Navbar selalu muncul di halaman mana saja */}
+      {/* Navbar selalu tampil */}
       <Navbar />
 
       <Routes>
-        {/* === Route Publik === */}
+        {/* === Public Routes === */}
         <Route path="/" element={<EventList />} />
         <Route path="/events" element={<EventList />} />
         <Route path="/events/:id" element={<EventDetail />} />
-        
-        {/* === Route Auth === */}
+
+        {/* === Auth Routes === */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
-        {/* === Route User === */}
+
+        {/* === User Routes === */}
         <Route path="/booking/:id" element={<BookingForm />} />
         <Route path="/my-bookings" element={<BookingHistory />} />
         <Route path="/profile" element={<UserProfile />} />
 
-        {/* === Route Admin === */}
+        {/* === Organizer Routes === */}
+        <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
+
+        {/* === Admin Routes === */}
         <Route path="/admin/dashboard" element={<DashboardAdmin />} />
-        
-        {/* === Route Error === */}
+
+        {/* === 404 === */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
