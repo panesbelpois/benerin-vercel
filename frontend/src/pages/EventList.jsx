@@ -1,101 +1,60 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Ticket } from 'lucide-react';
-
-// import images via Vite glob (eager for simplicity)
-const imageModules = import.meta.glob('../assets/event-list/*.{png,jpg,jpeg,webp}', { eager: true });
-const availableImages = Object.fromEntries(
-  Object.entries(imageModules).map(([path, mod]) => {
-    const name = path.split('/').pop();
-    return [name, mod.default];
-  })
-);
-
-import { sampleEvents } from '../data/events';
-
-// (events now come from shared data module)
-
-
-// mapping for filenames that don't directly match slugs
-const filenameMap = {
-    1: 'konser-indie.png',
-    2: 'tech-meetup.png',
-    3: 'festival-musik.png',
-    4: 'workshop-foto.png',
-    5: 'board-game.png',
-    6: 'marketing-digital.png',
-    7: 'teater-lokal.png',
-    8: 'yoga-pagi.png',
-    9: 'hackaton-48h.png',
-    10: 'food-festival.png',
-    // no images for new items yet; they will show placeholder
-};
-
-function slugify(title) {
-  return title
-    .toLowerCase()
-    .replace(/[\s]+/g, '-')
-    .replace(/[^a-z0-9\-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-}
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Calendar, MapPin, Ticket, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const EventList = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-
-  const filtered = sampleEvents.filter(
-    (e) =>
-      e.title.toLowerCase().includes(query.toLowerCase()) ||
-      e.venue.toLowerCase().includes(query.toLowerCase()) ||
-      e.tag.toLowerCase().includes(query.toLowerCase())
-  );
-
-  // Pagination: 16 per page (4 columns)
-  const itemsPerPage = 16;
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+  const itemsPerPage = 15;
 
+  // derived values
+  const filtered = events.filter((e) => {
+    const q = (query || '').trim().toLowerCase();
+    if (!q) return true;
+    return (
+      (e.title || '').toLowerCase().includes(q) ||
+      (e.location || '').toLowerCase().includes(q) ||
+      (e.tag || '').toLowerCase().includes(q)
+    );
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+  const paged = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+  // reset page when query changes
   useEffect(() => setPage(1), [query]);
 
-  // animation / observer
-  const containerRef = useRef(null);
-  const navigate = useNavigate();
-
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const cards = container.querySelectorAll('.event-card');
-    cards.forEach((c) => c.classList.remove('in-view'));
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get('/api/events');
+        setEvents(res.data);
+      } catch (err) {
+        console.error("Gagal ambil event:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { root: null, threshold: 0.12 }
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-blue-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
     );
-
-    cards.forEach((c) => io.observe(c));
-    return () => io.disconnect();
-  }, [page, query]);
-
-  const start = (page - 1) * itemsPerPage;
-  const current = filtered.slice(start, start + itemsPerPage);
-
-  // chunk into rows of 4
-  const rows = [];
-  for (let i = 0; i < current.length; i += 4) rows.push(current.slice(i, i + 4));
-
-  const goPage = (n) => setPage(Math.min(Math.max(1, n), totalPages));
+  }
 
   return (
-    <div className="events-page page-bg">
-      <section className="events-hero relative pt-72 pb-32 px-6 text-center overflow-hidden" aria-label="Event hero">
-        <div className="hero-inner" style={{ marginTop: '70px' }}>
+    <div className="min-h-screen bg-gradient-to-b from-blue-600 via-blue-50 to-white pb-20">
+      <div className="relative pt-36 pb-32 px-6 text-center overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+        <div className="relative z-10 max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1 rounded-full text-blue-50 text-xs font-bold uppercase tracking-wider mb-4 shadow-lg">
               <Ticket size={14} /> Event List
             </div>
@@ -106,79 +65,94 @@ const EventList = () => {
               Konser, workshop, festival & lainnya — semua di satu tempat.
             </p>
 
-            <div className="hero-controls">
+            <div className="hero-controls mt-6">
               <input
-                className="search-bar"
+                className="search-bar w-full max-w-md mx-auto p-3 rounded-full text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-xl"
                 placeholder="Cari event, venue, atau kategori"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
             </div>
-          </div>
-      </section>
-
-      <div style={{ padding: '32px 40px' }}>
-        <div style={{ marginBottom: 20 }}>
-          {/* Header area intentionally left empty; hero contains title/search */}
         </div>
+      </div>
 
-        <div className="events-rows" ref={containerRef}>
-          {rows.map((row, rowIdx) => (
-            <div key={rowIdx} className={`events-row ${row.length < 4 ? 'row-center' : ''}`}>
-              {row.map((evt, colIdx) => {
-                const gIndex = rowIdx * 4 + colIdx;
-                return (
-                  <div
-                    className="event-card"
-                    key={evt.id}
-                    data-idx={gIndex}
-                    style={{ ['--delay']: `${gIndex * 60}ms` }}
-                  >
-                    <div className="event-thumb">
-                      {(() => {
-                        const mapped = filenameMap[evt.id];
-                        const slug = mapped || `${slugify(evt.title)}.png`;
-                        const defaultImg = availableImages['for-nan.jpg'] || availableImages['for-nan.jpeg'] || Object.values(availableImages)[0] || null;
-                        const imgUrl = availableImages[slug] || defaultImg;
-                        if (imgUrl) {
-                          return <img src={imgUrl} alt={evt.title} />;
-                        }
-                        return <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, rgba(37,99,235,0.06), rgba(99,102,241,0.04))' }} aria-hidden />;
-                      })()}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                      <div className="tag">{evt.tag}</div>
-                      <div className="price-pill">{`Rp ${evt.price.toLocaleString()}`}</div>
+        {/* Grid Card Event */}
+        {filtered.length > 0 ? (
+          <> {/* ✅ FIX: Tambahkan Fragment Pembuka Disini */}
+          
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paged.map((event) => (
+                <Link to={`/events/${event.id}`} key={event.id} className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-100 flex flex-col h-full transform hover:-translate-y-1" style={{ textDecoration: 'none' }}>
+                  
+                  {/* Gambar Thumbnail */}
+                  <div className="relative h-56 overflow-hidden bg-slate-200">
+                    <img
+                      src={event.image_url || 'https://via.placeholder.com/400x200?text=No+Image'}
+                      alt={event.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      onError={(e) => {
+                        e.target.onerror = null; 
+                        e.target.src = 'https://via.placeholder.com/400x200?text=Error+Image';
+                      }}
+                    />
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-blue-600 shadow-sm">
+                      Event
+                    </div>
+                  </div>
+
+                  {/* Konten Card */}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-3 uppercase tracking-wider">
+                      <Calendar size={14} className="text-blue-500" />
+                      {event.date ? `${new Date(event.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} • ${new Date(event.date).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` : 'Tanggal Belum Ada'}
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {event.title}
+                    </h3>
+                    
+                    <div className="flex items-center gap-2 text-slate-500 text-sm mb-6">
+                      <MapPin size={16} />
+                      <span className="truncate">{event.location || 'Lokasi belum ditentukan'}</span>
                     </div>
 
-                    <div style={{ padding: 14 }}>
-                      <h3 className="event-title">{evt.title}</h3>
-                      <div className="event-meta">{evt.date} • {evt.venue}</div>
-
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{evt.tag}</div>
-                        <div style={{ display: 'flex', gap: 8 }}>
-                          <button className="btn btn-primary" onClick={() => navigate(`/booking/${evt.id}`)}>Beli Tiket</button>
-                        </div>
+                    <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-slate-400 font-medium">Mulai dari</span>
+                        <span className="text-lg font-bold text-blue-600">
+                          {event.ticket_price ? `Rp ${parseInt(event.ticket_price).toLocaleString('id-ID')}` : 'Gratis'}
+                        </span>
+                      </div>
+                      <div className="bg-blue-50 p-2 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                          <ArrowRight size={20} />
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </Link>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* Pagination */}
-        <div className="pagination" style={{ marginTop: 28, display: 'flex', justifyContent: 'center', gap: 8 }}>
-          <button className="btn" onClick={() => goPage(page - 1)} disabled={page === 1}>Prev</button>
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button key={i} className={`btn ${page === i + 1 ? 'btn-primary' : ''}`} onClick={() => goPage(i + 1)}>{i + 1}</button>
-          ))}
-          <button className="btn" onClick={() => goPage(page + 1)} disabled={page === totalPages}>Next</button>
-        </div>
+            {totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center gap-3">
+                <button className="px-4 py-2 bg-white border rounded-lg hover:bg-slate-50 disabled:opacity-50" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>Prev</button>
+                <div className="text-sm text-slate-600">Halaman {page} / {totalPages}</div>
+                <button className="px-4 py-2 bg-white border rounded-lg hover:bg-slate-50 disabled:opacity-50" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next</button>
+              </div>
+            )}
+
+          </> /* ✅ FIX: Tambahkan Fragment Penutup Disini */
+        ) : (
+          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+            <Ticket size={48} className="mx-auto text-slate-300 mb-4" />
+            <h3 className="text-lg font-medium text-slate-900">Belum ada event tersedia</h3>
+            <p className="text-slate-500">Coba refresh halaman atau cek kembali nanti.</p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default EventList; 
+export default EventList;
