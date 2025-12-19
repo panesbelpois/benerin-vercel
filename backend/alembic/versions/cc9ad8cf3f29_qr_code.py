@@ -1,8 +1,8 @@
-"""Add Profil
+"""QR CODE
 
-Revision ID: e2c1e2850f20
+Revision ID: cc9ad8cf3f29
 Revises: 
-Create Date: 2025-12-19 08:49:40.043222
+Create Date: 2025-12-19 09:49:46.861690
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e2c1e2850f20'
+revision: str = 'cc9ad8cf3f29'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -52,13 +52,16 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('bookings',
-    sa.Column('id', sa.String(), nullable=False),
-    sa.Column('event_id', sa.String(), nullable=True),
-    sa.Column('attendee_id', sa.String(), nullable=True),
+    sa.Column('id', sa.String(length=4), nullable=False),
+    sa.Column('event_id', sa.String(length=4), nullable=False),
+    sa.Column('attendee_id', sa.String(length=4), nullable=False),
     sa.Column('booking_code', sa.String(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('total_price', sa.Integer(), nullable=False),
     sa.Column('status', sa.String(), nullable=True),
+    sa.Column('whatsapp', sa.String(), nullable=True),
+    sa.Column('payment_method', sa.String(), nullable=True),
+    sa.Column('payment_details', sa.String(), nullable=True),
     sa.Column('booking_date', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['attendee_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['event_id'], ['events.id'], ),

@@ -25,42 +25,46 @@ def register(request):
     try:
         data = request.json_body
         
-        # 1. VALIDASI FORMAT EMAIL (UPDATED)
-        # Sekarang menerima Gmail DAN Email Student ITERA
+        # 1. VALIDASI FORMAT EMAIL (Tetap sama)
         email_input = data['email'].strip().lower()
         allowed_domains = ('@gmail.com', '@student.itera.ac.id')
         
         if not email_input.endswith(allowed_domains):
             request.response.status = 400
-            return {'message': 'Registration failed. Please use a valid Gmail or ITERA student email address.'}
+            return {'message': 'Registration failed. Only @gmail.com or @student.itera.ac.id are allowed.'}
 
-        # 2. VALIDASI ROLE
-        input_role = data.get('role', '').lower()
-        if input_role not in ['admin', 'user']:
-            request.response.status = 400
-            return {'message': 'Invalid role. Choose "admin" or "user"'}
-
-        # 3. CEK DUPLIKAT EMAIL
+        # 2. CEK DUPLIKAT EMAIL
         if request.dbsession.query(User).filter_by(email=email_input).first():
             request.response.status = 400
             return {'message': 'Email already exists'}
         
-        # 4. CEK DUPLIKAT USERNAME/NAME
+        # 3. CEK DUPLIKAT USERNAME
         if request.dbsession.query(User).filter_by(name=data['name']).first():
             request.response.status = 400
-            return {'message': 'Username already taken. Please choose another one.'}
+            return {'message': 'Username/Name already taken.'}
+
+        # --- PERUBAHAN UTAMA DI SINI ---
+        # Kita HAPUS logika "input_role". 
+        # Semua registrasi mandiri OTOMATIS jadi 'user'.
+        default_role = 'user' 
+        # -------------------------------
 
         new_user = User(
             name=data['name'],
             email=email_input,
             password=hash_password(data['password']),
-            role=input_role
+            role=default_role # Selalu 'user'
         )
         
         request.dbsession.add(new_user)
         request.dbsession.flush()
         
-        return {'message': 'User created successfully', 'id': new_user.id}
+        return {
+            'message': 'Registration successful! You are registered as a User.', 
+            'id': new_user.id,
+            'role': default_role
+        }
+
     except Exception as e:
         request.response.status = 500
         return {'error': str(e)}
@@ -196,3 +200,11 @@ def get_all_users(request):
     except Exception as e:
         request.response.status = 500
         return {'error': str(e)}
+    
+@view_config(route_name='logout', renderer='json', request_method='POST')
+def logout(request):
+    # Di sistem Token (Stateless), logout sebenarnya terjadi di sisi Client (Frontend)
+    # Backend cukup memberikan respon sukses "200 OK".
+    # Frontend nanti yang bertugas menghapus token dari LocalStorage.
+    
+    return {'message': 'Logout successful'}
