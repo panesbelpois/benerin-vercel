@@ -20,9 +20,11 @@ import ForgotPassword from './pages/ForgotPassword'; // <-- Forgot Password page
 import NotificationSettings from './pages/NotificationSettings'; // <-- Notification Settings page
 import HelpCenter from './pages/HelpCenter'; // <-- Help & Support
 import PaymentPage from './pages/PaymentPage'; // <-- Payment Page
+import TicketPage from './pages/TicketPage'; // <-- E-Ticket Page
 
 import OrganizerDashboard from './pages/Dashboard';
 import DashboardAdmin from './pages/DashboardAdmin';
+import DashboardSuperAdmin from './pages/DashboardSuperAdmin';
 
 import NotFound from './pages/NotFound';
 
@@ -59,9 +61,14 @@ function App() {
 
         {/* === Admin Routes === */}
         <Route path="/admin/dashboard" element={<DashboardAdmin />} />
+        {/* === Super Admin Routes === */}
+        <Route path="/super-admin/dashboard" element={<DashboardSuperAdmin />} />
 
         {/* === Payment === */}
         <Route path="/payment/:bookingId" element={<PaymentPage />} />
+
+        {/* === Ticket (E-Ticket) === */}
+        <Route path="/ticket/:bookingId" element={<TicketPage />} />
 
         {/* === 404 === */}
         <Route path="/404" element={<NotFound />} />

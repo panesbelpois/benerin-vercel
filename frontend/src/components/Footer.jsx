@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const HIDE_ON = ['/login', '/register', '/admin/dashboard', '/404', '/organizer/events', '/forgot-password', '/notifications'];
+const HIDE_ON = ['/login', '/register', '/admin/dashboard', '/super-admin/dashboard', '/404', '/organizer/events', '/forgot-password', '/notifications'];
 
 export default function Footer() {
   const location = useLocation();
@@ -12,7 +12,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-white border-t" style={{ fontFamily: 'var(--font-header)' }}>
+    <footer className="no-print bg-white border-t" style={{ fontFamily: 'var(--font-header)' }}> 
       <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
 
         {/* Left */}

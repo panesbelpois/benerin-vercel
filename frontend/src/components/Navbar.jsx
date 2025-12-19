@@ -9,7 +9,7 @@ const Navbar = () => {
   const location = useLocation();
 
   // Hide navbar on authentication and specific pages
-  const _hideNavbarOn = ['/login', '/register', '/admin/dashboard', '/404', '/organizer/events'];
+  const _hideNavbarOn = ['/login', '/register', '/admin/dashboard', '/super-admin/dashboard', '/404', '/organizer/events'];
   if (_hideNavbarOn.some(p => location.pathname.startsWith(p))) return null;
   
   // Simulasi status login (Ubah ke false untuk tes tampilan belum login)
@@ -39,7 +39,7 @@ const Navbar = () => {
   return (
     <>
       {/* Container Utama Navbar (Floating) */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
+      <div className="no-print fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
         
         {/* Kapsul Navbar */}
         <nav className={`pointer-events-auto w-full max-w-6xl transition-all duration-300 ease-in-out border border-white/40

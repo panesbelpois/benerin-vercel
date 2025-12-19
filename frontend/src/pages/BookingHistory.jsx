@@ -3,39 +3,19 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Ticket, Clock, CheckCircle2, XCircle, ChevronRight, QrCode, Sparkles, Hourglass, Receipt } from 'lucide-react';
 
 const BookingHistory = () => {
-  // Dummy Data
-  const bookings = [
-    {
-      id: 'INV-2024001',
-      eventName: 'Evoria Music Festival 2024',
-      date: '20 Des 2024',
-      time: '19:00 WIB',
-      location: 'PKOR Way Halim',
-      status: 'Confirmed', 
-      qty: 2,
-      total: 300000,
-    },
-    {
-      id: 'INV-2024002',
-      eventName: 'Workshop React & Tailwind',
-      date: '15 Jan 2025',
-      time: '09:00 WIB',
-      location: 'Evoria Creative Hub',
-      status: 'Pending',
-      qty: 1,
-      total: 50000,
-    },
-    {
-       id: 'INV-2024003',
-       eventName: 'Startup Talk 2024',
-       date: '10 Nov 2024',
-       time: '13:00 WIB',
-       location: 'Zoom Meeting',
-       status: 'Cancelled',
-       qty: 1,
-       total: 0,
-    }
-  ];
+  // Bookings are loaded from localStorage via lib/bookings (initialized with demo data)
+  const [bookings, setBookings] = React.useState([]);
+
+  React.useEffect(() => {
+    let mounted = true;
+    import('../lib/bookings').then(({ getBookings }) => {
+      if (mounted) setBookings(getBookings());
+    });
+
+    const handler = () => import('../lib/bookings').then(({ getBookings }) => setBookings(getBookings()));
+    window.addEventListener('bookings:updated', handler);
+    return () => { mounted = false; window.removeEventListener('bookings:updated', handler); };
+  }, []);
 
   // === WARNA STATUS (Pending = Amber/Emas) ===
   const getStatusStyle = (status) => {
@@ -171,14 +151,14 @@ const BookingHistory = () => {
                                 {/* BAGIAN KANAN: Tombol Aksi (Compact) */}
                                 <div className="flex-shrink-0">
                                     {item.status === 'Confirmed' ? (
-                                        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold shadow-lg shadow-blue-200/50 transition-all active:scale-95">
+                                        <Link to={`/ticket/${item.id}`} state={{ buyerName: item.buyer, eventName: item.eventName, date: item.date, time: item.time, location: item.location, qty: item.qty, total: item.total }} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold shadow-lg shadow-blue-200/50 transition-all active:scale-95">
                                             <QrCode size={18}/> 
                                             <span className="hidden sm:inline">Lihat</span> E-Ticket
-                                        </button>
+                                        </Link>
                                     ) : item.status === 'Pending' ? (
-                                        <button className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold shadow-lg shadow-amber-200/50 transition-all active:scale-95">
+                                        <Link to={`/payment/${item.id}`} state={{ bookingId: item.id, qty: item.qty, pricePer: item.total / Math.max(1, item.qty), total: item.total, eventTitle: item.eventName }} className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold shadow-lg shadow-amber-200/50 transition-all active:scale-95">
                                             Bayar <span className="hidden sm:inline">Sekarang</span> <ChevronRight size={16}/>
-                                        </button>
+                                        </Link>
                                     ) : (
                                         <button disabled className="flex items-center gap-2 bg-slate-100 text-slate-400 px-5 md:px-6 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold cursor-not-allowed">
                                             <Receipt size={18}/> Detail
