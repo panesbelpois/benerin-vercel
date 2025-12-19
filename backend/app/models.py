@@ -21,6 +21,11 @@ class User(Base):
     role = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     
+    # --- FORGOT PASSWORD ---
+    reset_token = Column(String, nullable=True)        # Menyimpan kode unik
+    reset_token_expiry = Column(DateTime, nullable=True) # Menyimpan waktu expired
+    # --------------------------------------
+
     events = relationship("Event", back_populates="organizer")
     bookings = relationship("Booking", back_populates="attendee")
 

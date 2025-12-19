@@ -86,3 +86,33 @@ def send_booking_confirmation(to_email, user_name, event_title, booking_code, qu
     # Jalankan di Thread terpisah agar user tidak menunggu loading kirim email
     thread = threading.Thread(target=send_email_async, args=(to_email, subject, html_body))
     thread.start()
+
+def send_reset_token_email(to_email, token):
+    """
+    Mengirim email berisi token reset password
+    """
+    subject = "Reset Password - Kode Verifikasi"
+    
+    html_body = f"""
+    <html>
+      <body style="font-family: Arial, sans-serif;">
+        <div style="border: 1px solid #ddd; padding: 20px; border-radius: 10px; max-width: 500px;">
+            <h2 style="color: #c0392b;">Permintaan Reset Password</h2>
+            <p>Seseorang (semoga kamu) meminta untuk mereset password akun Ticketing kamu.</p>
+            <p>Gunakan kode berikut untuk membuat password baru:</p>
+            
+            <div style="background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold; border-radius: 5px;">
+                {token}
+            </div>
+            
+            <p style="margin-top: 20px; font-size: 13px; color: #777;">
+                Kode ini hanya berlaku selama <strong>15 menit</strong>.<br>
+                Jika kamu tidak meminta ini, abaikan saja email ini.
+            </p>
+        </div>
+      </body>
+    </html>
+    """
+    
+    thread = threading.Thread(target=send_email_async, args=(to_email, subject, html_body))
+    thread.start()

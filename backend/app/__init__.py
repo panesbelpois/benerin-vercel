@@ -25,6 +25,10 @@ def main(global_config, **settings):
        # --- ROUTING ---
         config.add_route('register', '/api/register')
         config.add_route('login', '/api/login')
+
+        # FORGOT PASSWORD ROUTES (BARU)
+        config.add_route('forgot_password', '/api/forgot-password')
+        config.add_route('reset_password', '/api/reset-password')
         
         # EVENT ROUTES
         config.add_route('events', '/api/events')          
