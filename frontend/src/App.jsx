@@ -52,7 +52,6 @@ function App() {
         <Route path="/help" element={<HelpCenter />} />
 
         {/* === Organizer Routes === */}
-        <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
         <Route path="/organizer/events" element={<DashboardAdmin initialTab="events" />} />
         <Route path="/organizer/bookings" element={<DashboardAdmin initialTab="bookings" />} />
 
