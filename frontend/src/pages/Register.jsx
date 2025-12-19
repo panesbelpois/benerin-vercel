@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../index.css';
 import AuthSlider from '../components/AuthSlider';
+import TermsModal from '../components/TermsModal';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -9,12 +10,15 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
+  const [accepted, setAccepted] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
   const handleRegister = (e) => {
     e.preventDefault();
     setError('');
     if (password.length < 6) return setError('Password minimal 6 karakter');
     if (password !== confirm) return setError('Password dan konfirmasi tidak cocok');
+    if (!accepted) return setError('Anda harus menyetujui Syarat & Ketentuan untuk mendaftar');
     alert(`Registrasi berhasil untuk ${name} (${email})`);
   };
 
@@ -84,13 +88,18 @@ const Register = () => {
               <Link to="/login" className="small-link small-link--primary" style={{ alignSelf: 'center' }}>Sudah punya akun?</Link>
             </div>
 
+            <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'space-between' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Saya menyetujui <button type="button" onClick={() => setShowTerms(true)} style={{ background: 'transparent', border: 'none', color: 'var(--primary)', textDecoration: 'underline', cursor: 'pointer', padding: 0, fontSize: '0.72rem' }}>Syarat &amp; Ketentuan</button></span>
+              </label>
+            </div>
+
             <div style={{ marginTop: 10 }}>
               <button className="btn btn-primary" type="submit" style={{ width: '100%' }}>Daftar</button>
             </div>
 
-            <div style={{ marginTop: 18, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Dengan mendaftar, Anda menyetujui <Link to="#" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Syarat & Ketentuan</Link>
-            </div>
+            {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
           </form>
         </div>
       </div>

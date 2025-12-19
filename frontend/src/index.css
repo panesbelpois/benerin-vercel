@@ -120,10 +120,10 @@ input:focus {
 
 .auth-card {
   width: 100%;
-  max-width: 920px;
+  max-width: 780px; /* reduced from 920px */
   display: grid;
-  grid-template-columns: 1fr 440px;
-  gap: 2rem;
+  grid-template-columns: 1fr 360px; /* narrower right column */
+  gap: 1.5rem;
   background: linear-gradient(180deg, var(--bg-card), rgba(255,255,255,0.96));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);

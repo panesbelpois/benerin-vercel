@@ -82,9 +82,7 @@ const Login = () => {
             </div>
           </form>
 
-          <div style={{ marginTop: 18, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Dengan masuk, Anda menyetujui <Link to="#" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Syarat & Ketentuan</Link>
-          </div>
+          {/* T&C removed from login per UX request */}
         </div>
       </div>
     </div>
