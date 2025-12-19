@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../index.css'; // Pastikan CSS terhubung
+import AuthSlider from '../components/AuthSlider';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,10 +18,7 @@ const Login = () => {
     <div className="login-layout">
       <div className="auth-card">
         <div className="auth-left">
-          <div className="hero">
-            <h3>Selamat datang di Evoria</h3>
-            <p>Kelola event, tiket, dan peserta dengan mudah — semua di satu tempat. Masuk untuk melanjutkan ke dashboard admin.</p>
-            </div>
+          <AuthSlider />
         </div>
 
         <div className="auth-right">

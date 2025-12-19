@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../index.css';
+import AuthSlider from '../components/AuthSlider';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -21,10 +22,7 @@ const Register = () => {
     <div className="login-layout">
       <div className="auth-card">
         <div className="auth-left">
-          <div className="hero">
-            <h3>Selamat datang di Evoria</h3>
-            <p>Daftar untuk membuat atau mengikuti event seru di Evoria.</p>
-          </div>
+          <AuthSlider />
         </div>
 
         <div className="auth-right">
